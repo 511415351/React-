@@ -6,7 +6,7 @@ interface props {
     callback?: () => void;
 }
 export default function Card(props: props) {
-    const { title = '标题', children, callback } = props;
+    const { title = '标题', children } = props;
     const event = new Event('on-card-click');
     const clickCard = () => {
         window.dispatchEvent(event);
