@@ -3,6 +3,7 @@ import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import { MailOutlined, UserOutlined, SolutionOutlined, LaptopOutlined, HomeOutlined, UsergroupDeleteOutlined } from '@ant-design/icons';
 import { useStore } from '../../store';
+import { useNavigate } from 'react-router-dom';
 
 type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
@@ -15,29 +16,21 @@ const items: MenuItem[] = [
         {
             key: '/userList',
             label: 'User List',
-            type: 'group',
             icon: <UserOutlined />,
         },
         {
             key: '/menuList',
             label: 'Menu List',
-            type: 'group',
-            children: [
-            { key: '/menu1', label: 'Option 3' },
-            { key: '/menu2', label: 'Option 4' },
-            ],
             icon: <MailOutlined />,
         },
         {
             key: '/roleList',
             label: 'Role List',
-            type: 'group',
             icon: <SolutionOutlined />,
         },
         {
             key: '/deptList',
             label: 'Dept List',
-            type: 'group',
             icon: <LaptopOutlined />,
         }
         ],
@@ -46,7 +39,12 @@ const items: MenuItem[] = [
 ];
 
 const SiberMenu = () => {
-    const { collapsed } = useStore();
+    const navgiate = useNavigate();
+    const { collapsed, currentMenu, setCurrentMenu } = useStore();
+    const menuClick = ({key}: {key: string}) => {
+        setCurrentMenu(key);
+        navgiate(key);
+    }
     return (
         <div className={styles.siberMenu}>
             <div className={styles.logo}>
@@ -54,8 +52,9 @@ const SiberMenu = () => {
                 {collapsed ? '': <span >企业中台</span>}
             </div>
             <Menu
-                defaultSelectedKeys={['1']}
+                defaultSelectedKeys={[currentMenu]}
                 defaultOpenKeys={['sub1']}
+                onClick={ menuClick}
                 mode="inline"
                 theme="dark"
                 inlineCollapsed={collapsed}

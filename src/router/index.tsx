@@ -4,6 +4,12 @@ import NotFound from "../views/NotFound";
 import Login from "../views/login";
 import Welcome from "../views/welcome";
 import Layout from "../layout";
+import DashboardView from "../views/dashboard";
+import DeptView from "../views/dept";
+import UserView from "../views/user";
+import RoleView from "../views/role";
+import MenuView from "../views/menu";
+
 
 const loginAction = async ({ request }: { request: Request }) => {
     const formData = await request.formData();
@@ -23,6 +29,11 @@ const router = createBrowserRouter([
         element: <Layout />, 
         children: [
             {path: "/welcome" ,element: <Welcome />},
+            {path: "/dashboard" ,element: <DashboardView />},
+            {path: "/deptList" ,element: <DeptView />},
+            {path: "/userList" ,element: <UserView />},
+            {path: "/roleList" ,element: <RoleView />},
+            {path: "/menuList" ,element: <MenuView />},
         ] 
     },
     { path: "/", element: <Navigate to="/welcome" /> },
