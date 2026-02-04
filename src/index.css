@@ -66,3 +66,34 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+body{
+    margin:0;
+    padding: 0;
+}
+.wrap-table {
+    background-color: var(--dark-bg-color);
+    border-radius: 5px;
+    color: #000;
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 5px 5px 0 0;
+        color: var(--dark-color);
+        padding: 15px ;
+        .actions {
+            margin: 15px ;
+        }
+    }
+}
+.search-form {
+    margin-bottom: 15px;
+    background-color: var(--dark-bg-color);
+    padding: 20px ;
+    border-radius: 5px;
+    color: #000;
+}
+.mr10{
+    margin-right: 10px;
+}

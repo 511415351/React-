@@ -21,7 +21,6 @@ export default function LayoutCon(){
             <div className={style.content}>
                 <div className="wrapper">
                     <Outlet />
-                    <Content >Content</Content>
                 </div>
                 
             </div>
