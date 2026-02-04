@@ -18,3 +18,24 @@ export interface IDept {
     userName: string;
     children?: IDept[];
 }
+
+export interface IUserListParams {
+    state: string;
+}
+
+export interface IUser {
+    _id: string;
+    userId: number;
+    userName: string;
+    userEmail: string;
+    deptId: string;
+    state: number;
+    mobile: string;
+    job: string;
+    role: number;
+    roleList: string;
+    createId: number;
+    deptName: string;
+    userImg: string;
+    userPwd: string;
+}
