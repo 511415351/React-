@@ -124,7 +124,7 @@ export default function DeptView() {
                     />
                 </div>
             </div>
-            <CreateDept  mref={deptRef} updateDeptList={getDeptList}/>;
+            <CreateDept  mref={deptRef} updateDeptList={getDeptList}/>
         </div>
         
     )
