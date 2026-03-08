@@ -1,13 +1,17 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useAntdTable } from 'ahooks';
 import { Form, Input,Space,Button ,Table, Modal, message} from 'antd';
 import type { TableColumnsType } from 'antd';
 import api from '../../api/roleApi';
 import type { IRole, IRoleSearchParams } from '../../types/api';
 import styles from './index.module.less';
+import CreateRole from './CreateRole';
 
 export default function RoleView() {
     const [form] = Form.useForm();
+    const roleRef = useRef<{
+        openModal:(type: string, data?:IRole| {parnetId:string}) => void
+    }>(null)
     const columns: TableColumnsType<IRole> = [
         {
             title: 'Role Name',
@@ -40,7 +44,6 @@ export default function RoleView() {
             key: 'operation',
             render: (_, record) => (
             <Space size="middle">
-                <Button type="primary" onClick={() => handleSubCreate(record._id)}>新增</Button>
                 <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
                 <Button type="primary" onClick={() => handlePermission(record)}>权限设置</Button>
                 <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
@@ -62,12 +65,14 @@ export default function RoleView() {
     })
     const handleCreate = () => {
         // 打开创建角色的模态框
+        roleRef.current?.openModal('create');
     };
     const handleSubCreate = (parentId: string) => {
         // 打开创建子角色的模态框，并传递 parentId
     };
     const handleEdit = (record: IRole) => {
         // 打开编辑角色的模态框，并传递 record 数据
+        roleRef.current?.openModal('edit',record);
     };
     const handlePermission = (record: IRole) => {
         // 打开权限设置的模态框，并传递 record 数据
@@ -75,13 +80,14 @@ export default function RoleView() {
     const handleDelete = (id: string) => {
         Modal.confirm({
             title: 'Are you sure you want to delete this role?',
+            content: 'Are you sure you want to delete this role?',
             onCancel: () => {
                 message.info('Deletion cancelled');
             },
              onOk: () => {
-                api.deleteRole(id).then(() => {
+                api.deleteRole({_id:id}).then(() => {
                     message.success('Role deleted successfully');
-                    getRoleData();
+                    search.submit();
                 }).catch(() => {
                     message.error('Failed to delete role');
                 }
@@ -117,6 +123,7 @@ export default function RoleView() {
                     />
                 </div>
             </div>
+            <CreateRole mref={roleRef} update={search.submit}/>
         </div>
     );
 }

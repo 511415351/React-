@@ -5,7 +5,7 @@ export default {
         return reuquest.get<ResultData<IRole>>('/roles/list',params)
     },
     deleteRole(params:{_id:string}){
-        return reuquest.post('/roles/delet',params)
+        return reuquest.post('/roles/delete',params)
     },
     updataPermission(params:IPermission){
         return reuquest.post('/roles/update/permission',params)
