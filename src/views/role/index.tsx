@@ -3,15 +3,19 @@ import { useAntdTable } from 'ahooks';
 import { Form, Input,Space,Button ,Table, Modal, message} from 'antd';
 import type { TableColumnsType } from 'antd';
 import api from '../../api/roleApi';
-import type { IRole, IRoleSearchParams } from '../../types/api';
+import type { IMenu, IRole, IRoleSearchParams } from '../../types/api';
 import styles from './index.module.less';
 import CreateRole from './CreateRole';
+import SetPermission from './SetPermission';
 
 export default function RoleView() {
     const [form] = Form.useForm();
     const roleRef = useRef<{
         openModal:(type: string, data?:IRole| {parnetId:string}) => void
-    }>(null)
+    }>(null);
+    const PermissionRef = useRef<{
+        openModal:(type: string, data?:IMenu) => void
+    }>(null);
     const columns: TableColumnsType<IRole> = [
         {
             title: 'Role Name',
@@ -69,6 +73,7 @@ export default function RoleView() {
     };
     const handleSubCreate = (parentId: string) => {
         // 打开创建子角色的模态框，并传递 parentId
+        PermissionRef.current?.openModal(parentId);
     };
     const handleEdit = (record: IRole) => {
         // 打开编辑角色的模态框，并传递 record 数据
@@ -76,6 +81,7 @@ export default function RoleView() {
     };
     const handlePermission = (record: IRole) => {
         // 打开权限设置的模态框，并传递 record 数据
+        PermissionRef.current?.openModal('setPermission',record);
     };
     const handleDelete = (id: string) => {
         Modal.confirm({
@@ -124,6 +130,7 @@ export default function RoleView() {
                 </div>
             </div>
             <CreateRole mref={roleRef} update={search.submit}/>
+            <SetPermission mref={PermissionRef} update={search.submit}/>
         </div>
     );
 }
