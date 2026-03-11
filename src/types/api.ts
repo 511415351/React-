@@ -32,22 +32,7 @@ export interface IUserListParams {
     state: string;
 }
 
-export interface IUser {
-    _id: string;
-    userId: number;
-    userName: string;
-    userEmail: string;
-    deptId: string;
-    state: number;
-    mobile: string;
-    job: string;
-    role: number;
-    roleList: string;
-    createId: number;
-    deptName: string;
-    userImg: string;
-    userPwd: string;
-}
+
 
 
 //菜单模块
@@ -118,4 +103,43 @@ export interface IPermission{
         checkedKeys: string[];
         halfCheckedKeys: string[];
     };
+}
+
+
+//用户模块
+
+export interface IUserSearchParams extends IPageParams {
+    userId?: number;
+    userName?: string;
+    state?:number;
+}
+
+export interface IUser {
+    _id: string;
+    userId: number;
+    userName: string;
+    userEmail: string;
+    deptId: string;
+    state: number;
+    mobile: string;
+    job: string;
+    role: number;
+    roleList: string;
+    createId: number;
+    deptName: string;
+    userImg: string;
+    userPwd?: string;
+}
+export interface ICreateUserParams {
+    userName:string;
+    userEmail: string;
+    deptId: string;
+    state?: number;
+    mobile?: string;
+    job?: string;
+    roleList: string[];
+    userImg: string;
+}
+export interface IUpdateUserParams extends ICreateUserParams {
+    userId:string;
 }

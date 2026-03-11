@@ -16,4 +16,7 @@ export default {
     editRole(params:IEditRoleParams){
         return request.post('/roles/edit',params)
     },
+    getAllRoleList(){
+        return request.get<ResultData<IRole>>('/roles/allList')
+    },
 }

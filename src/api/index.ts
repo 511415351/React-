@@ -1,5 +1,19 @@
 import request from "../utils/reuquest";
-import type { ILoginParams, IDeptSearchParams,IDept, IUserListParams, IUser, ICreateMenuParams, IMenu, ISearchParams, IUpdateMenuParams } from "../types/api";
+import type { 
+    ILoginParams, 
+    IDeptSearchParams,
+    IDept, 
+    IUserListParams, 
+    IUser, 
+    ICreateMenuParams, 
+    IMenu, 
+    ISearchParams, 
+    IUpdateMenuParams,
+    IUpdateUserParams,
+    ICreateUserParams,
+    IUserSearchParams,
+} from "../types/api";
+import create from "@ant-design/icons/lib/components/IconFont";
 export default {
     login(params: ILoginParams){
         return request.post('/users/login', params);
@@ -20,13 +34,25 @@ export default {
     deleteDept(id: string){
         return request.post('/dept/delete', { id });
     },
+
+    //用户模块
     //获取用户信息
-    getUserList(params?: IUserListParams){
+    getUserList(params?: IUserSearchParams){
         return request.get('/users/list', { params });
     },
     getAllUser(params?: IUser){
         return request.get<IUser[]>('/users/all/list', { params });
     },
+    createUser(params:ICreateUserParams){
+        return request.post<ICreateUserParams>('/users/create',{params});
+    },
+    editUser(params:IUpdateUserParams){
+        return request.post<IUpdateUserParams>('/users/edit',{params});
+    },
+    delUser(params:any){
+        return request.post('/users/delete',{params});
+    },
+
     //菜单模块
     //菜单list
     getMenuList(params?: ISearchParams){

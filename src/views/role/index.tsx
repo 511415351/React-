@@ -39,9 +39,6 @@ export default function RoleView() {
             width: '20%',
         },
         {
-
-        },
-        {
             title: '操作',
             dataIndex: 'operation',
             width: '20%',

@@ -63,7 +63,7 @@ export default function CreateRole(props: IProps) {
                     <Form.Item name="_id" style={{ display: 'none' }}>
                         <Input type="hidden" />
                     </Form.Item>
-                    <Form.Item label="Role Name" name="roleName" rules={[{ required: true, message: 'Please input the menu name!' }]}>
+                    <Form.Item label="Role Name" name="roleName" rules={[{ required: true, message: 'Please input the role name!' }]}>
                         <Input placeholder='Please input the Role Name'></Input>
                     </Form.Item>
                     <Form.Item label="remark" name="remark" >
