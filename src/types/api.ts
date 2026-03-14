@@ -143,3 +143,35 @@ export interface ICreateUserParams {
 export interface IUpdateUserParams extends ICreateUserParams {
     userId:string;
 }
+
+export interface IReportData {
+    codeLine: number; 
+    salary: number;
+    icafeCount: number;
+    projectNum: number;
+}
+
+// 1. 折线图数据
+export interface ILineData {
+    label: string[]; // 月份/横坐标
+    order: number[]; // 订单数
+    money: number[]; // 金额
+}
+
+// 2. 饼图通用单项数据 (城市和年龄分布结构是一样的)
+export interface IPieData {
+    value: number;
+    name: string;
+}
+
+// 3. 雷达图数据
+export interface IRadarData {
+    indicator: {
+        name: string;
+        max: number;
+    }[];
+    data: {
+        value: number[];
+        name: string;
+    }[];
+}

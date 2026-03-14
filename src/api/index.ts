@@ -2,8 +2,7 @@ import request from "../utils/reuquest";
 import type { 
     ILoginParams, 
     IDeptSearchParams,
-    IDept, 
-    IUserListParams, 
+    IDept,  
     IUser, 
     ICreateMenuParams, 
     IMenu, 
@@ -12,6 +11,10 @@ import type {
     IUpdateUserParams,
     ICreateUserParams,
     IUserSearchParams,
+    IReportData,
+    ILineData,
+    IRadarData,
+    IPieData,
 } from "../types/api";
 import create from "@ant-design/icons/lib/components/IconFont";
 export default {
@@ -52,6 +55,9 @@ export default {
     delUser(params:any){
         return request.post('/users/delete',{params});
     },
+    getUserInfo() {
+        return request.get<IUser>('/users/getUserInfo');
+    },
 
     //菜单模块
     //菜单list
@@ -70,4 +76,27 @@ export default {
     deleteMenu(id: string){
         return request.post('/menu/delete', { id });
     },
+
+    getReportData() {
+        return request.get<IReportData>('/order/dashboard/getReportData');
+    },
+    // 折线图
+    getLineData() {
+        return request.get<ILineData>('/order/dashboard/getLineData');
+    },
+
+    // 城市分布饼图
+    getPieCityData() {
+        return request.get<IPieData[]>('/order/dashboard/getPieCityData');
+    },
+
+    // 年龄分布饼图
+    getPieAgeData() {
+        return request.get<IPieData[]>('/order/dashboard/getPieAgeData');
+    },
+
+    // 雷达图
+    getRadarData() {
+        return request.get<IRadarData>('/order/dashboard/getRadarData');
+    }
 };
