@@ -80,7 +80,7 @@ export default function MenuView() {
     ];
     
     const [data, setData] = useState<IMenu[]>([]);
-    
+    const [loading, setLoading] = useState(false);
     const menuRef = useState<{
         openModal: (type: string, data?: IMenu | {parentId?: string}) => void 
     }>(null);
@@ -89,8 +89,10 @@ export default function MenuView() {
         getMenuList();
         }, []);
     const getMenuList = async () => {
+        setLoading(true);
         const data = await api.getMenuList(form.getFieldsValue());
             setData(data);
+        setLoading(false);
     }
     const handleReset = () => {
         console.log('Reset form');
@@ -160,6 +162,7 @@ export default function MenuView() {
                         rowKey="_id"
                         columns={columns}
                         dataSource={data}
+                        loading={loading}
                         pagination={ false}
                     />
                 </div>

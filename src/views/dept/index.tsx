@@ -53,7 +53,7 @@ export default function DeptView() {
     ];
     
     const [data, setData] = useState<IDept[]>([]);
-    
+    const [loading, setLoading] = useState(false);
     const deptRef = useState<{
         openModal: (type: string, data?: IDept | {parentId?: string}) => void 
     }>(null);
@@ -62,8 +62,10 @@ export default function DeptView() {
         getDeptList();
         }, []);
     const getDeptList = async () => {
+        setLoading(true);
         const data = await api.getDepList(form.getFieldsValue());
             setData(data);
+        setLoading(false);
     }
     const handleReset = () => {
         console.log('Reset form');
@@ -121,6 +123,8 @@ export default function DeptView() {
                     <Table rowKey="_id"
                         columns={columns}
                         dataSource={data}
+                        loading={loading}
+                        pagination={ false}
                     />
                 </div>
             </div>
