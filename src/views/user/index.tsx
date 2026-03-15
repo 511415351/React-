@@ -6,11 +6,13 @@ import { formatDate as formatDateToChinese } from '../../utils/index';
 import CreateUser from './CreateUser';
 import { useAntdTable } from 'ahooks';
 import type{ IUser, IUserSearchParams } from '../../types/api';
-// import AuthButton from '@/components/AuthButton';
-// import SearchForm from '@/components/SearchForm';
+import AuthButton from '../../components/AuthButton';
+import usePermission from '../../hooks/usePermission';
+
 export default function UserList() {
     const [form] = Form.useForm();
     const [userIds, setUserIds] = useState<number[]>([]);
+    const { hasButtonPermission } = usePermission();
     const userRef = useRef<{
         openModal: (type: string, data?: IUser) => void;
     }>();
@@ -137,14 +139,24 @@ export default function UserList() {
             title: '操作',
             key: 'address',
             render(record: IUser) {
+                const canEdit = hasButtonPermission('user@edit');
+                const canDelete = hasButtonPermission('user@delete');
+                if (!canEdit && !canDelete) {
+                    return null;
+                }
+
                 return (
                     <Space>
-                        <Button type="text" onClick={() => handleEdit(record)}>
-                            编辑
-                        </Button>
-                        <Button type="text" danger onClick={() => handleDel(record.userId)}>
-                            删除
-                        </Button>
+                        <AuthButton code="user@edit">
+                            <Button type="text" onClick={() => handleEdit(record)}>
+                                编辑
+                            </Button>
+                        </AuthButton>
+                        <AuthButton code="user@delete">
+                            <Button type="text" danger onClick={() => handleDel(record.userId)}>
+                                删除
+                            </Button>
+                        </AuthButton>
                     </Space>
                 );
             },
@@ -182,12 +194,16 @@ export default function UserList() {
                 <div className="header">
                     <div className="title">用户列表</div>
                     <div className="action">
-                        <Button type="primary" onClick={handleCreate}>
-                            新增
-                        </Button>
-                        <Button type="primary" danger onClick={handlePatchConfirm}>
-                            批量删除
-                        </Button>
+                        <AuthButton code="user@create">
+                            <Button type="primary" onClick={handleCreate}>
+                                新增
+                            </Button>
+                        </AuthButton>
+                        <AuthButton code="user@delete">
+                            <Button type="primary" danger onClick={handlePatchConfirm}>
+                                批量删除
+                            </Button>
+                        </AuthButton>
                     </div>
                 </div>
                 <Table

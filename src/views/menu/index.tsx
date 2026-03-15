@@ -1,15 +1,17 @@
-import styles from './index.module.scss';
-import React, { useEffect, useState } from 'react';
-import { Button, Space, Switch, Table, Form, Input, Modal, message, Select } from 'antd';
-import type { TableColumnsType, TableProps } from 'antd';
+import { useEffect, useRef, useState } from 'react';
+import { Button, Space, Table, Form, Input, Modal, message, Select } from 'antd';
+import type { TableColumnsType } from 'antd';
 import api from '../../api';
 import type { IMenu } from '../../types/api';
 import {formatDate} from '../../utils/index';
 import CreateMenu from './CreateMenu';
+import AuthButton from '../../components/AuthButton';
+import usePermission from '../../hooks/usePermission';
 
 
 
 export default function MenuView() {
+    const { hasButtonPermission } = usePermission();
     const columns: TableColumnsType<IMenu> = [
     {
         title: '菜单名称',
@@ -19,9 +21,9 @@ export default function MenuView() {
     },
     {
         title: '菜单图标',
-        dataIndex: 'menuIcon',
+        dataIndex: 'icon',
         key: 'menuIcon',
-        
+        render: (_, record) => record.icon || record.menuIcon,
     },
     {
         title: '菜单类型',
@@ -49,8 +51,9 @@ export default function MenuView() {
     },
     {
         title: '路由地址',
-        dataIndex: 'menuPath',
+        dataIndex: 'path',
         key: 'menuPath',
+        render: (_, record) => record.path || record.menuPath,
     },
     {
         title: '组件名称',
@@ -69,19 +72,34 @@ export default function MenuView() {
         dataIndex: 'operation',
         width: '20%',
         key: 'operation',
-        render: (_, record) => (
-        <Space size="middle">
-            <Button type="primary" onClick={() => handleSubCreate(record._id)}>新增</Button>
-            <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
-            <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
-        </Space>
-        ),
+        render: (_, record) => {
+            const canCreate = hasButtonPermission('menu@create');
+            const canEdit = hasButtonPermission('menu@edit');
+            const canDelete = hasButtonPermission('menu@delete');
+            if (!canCreate && !canEdit && !canDelete) {
+                return null;
+            }
+
+            return (
+                <Space size="middle">
+                    <AuthButton code="menu@create">
+                        <Button type="primary" onClick={() => handleSubCreate(record._id)}>新增</Button>
+                    </AuthButton>
+                    <AuthButton code="menu@edit">
+                        <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
+                    </AuthButton>
+                    <AuthButton code="menu@delete">
+                        <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
+                    </AuthButton>
+                </Space>
+            );
+        },
     },
     ];
     
     const [data, setData] = useState<IMenu[]>([]);
     const [loading, setLoading] = useState(false);
-    const menuRef = useState<{
+    const menuRef = useRef<{
         openModal: (type: string, data?: IMenu | {parentId?: string}) => void 
     }>(null);
     const [form] = Form.useForm();
@@ -99,7 +117,7 @@ export default function MenuView() {
         form.resetFields();
         getMenuList();
     }
-    const handleCreate  = (id:string) => {
+    const handleCreate  = (id = '') => {
         console.log('Create Menu');
         menuRef.current?.openModal('create', {parentId:id});
     }
@@ -121,10 +139,6 @@ export default function MenuView() {
             cancelText: 'No',
             onOk: () => handledDelOK(id),
             
-        });
-        api.deleteMenu(id).then(() => {
-            getMenuList();
-        }).catch(() => {            message.error('Failed to delete menu');
         });
     }
     const handledDelOK = async (id: string) => {
@@ -153,7 +167,9 @@ export default function MenuView() {
                 <div className='header'>
                     <div className='title'>Menu List</div>
                     <div className='actions'>
-                        <Button className='btn btn-primary' onClick={handleCreate}>Add Menu</Button>
+                        <AuthButton code="menu@create">
+                            <Button className='btn btn-primary' onClick={() => handleCreate()}>Add Menu</Button>
+                        </AuthButton>
                     </div>
                 </div>
                 <div className='content'>

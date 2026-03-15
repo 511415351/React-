@@ -52,12 +52,27 @@ export interface IUpdateMenuParams extends ICreateMenuParams {
     _id: string;
 }
 
-export interface IMenu extends ICreateMenuParams {
+export interface IMenu extends Partial<ICreateMenuParams> {
     _id: string;
+    menuName: string;
+    menuType: number;
+    menuCode?: string;
+    path?: string;
+    icon?: string;
+    orderBy: number;
+    menuState: number;
+    parentId: string;
+    createId?: number;
     createTime: string;
     updateTime: string;
     buttons?: IMenu[];//如果是菜单类型，则包含按钮列表
     children?: IMenu[];//如果是菜单类型，则包含子菜单列表
+}
+
+export interface IPermissionData {
+    menuList: IMenu[];
+    menuPaths: string[];
+    buttonList: string[];
 }
 
 //搜索条件

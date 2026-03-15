@@ -1,15 +1,17 @@
-import styles from './index.module.scss';
-import React, { useEffect, useState } from 'react';
-import { Button, Space, Switch, Table, Form, Input, Modal, message } from 'antd';
-import type { TableColumnsType, TableProps } from 'antd';
+import { useEffect, useRef, useState } from 'react';
+import { Button, Space, Table, Form, Input, Modal, message } from 'antd';
+import type { TableColumnsType } from 'antd';
 import api from '../../api';
 import type { IDept } from '../../types/api';
 import {formatDate} from '../../utils/index';
 import CreateDept from './CreateDept';
+import AuthButton from '../../components/AuthButton';
+import usePermission from '../../hooks/usePermission';
 
 
 
 export default function DeptView() {
+    const { hasButtonPermission } = usePermission();
     const columns: TableColumnsType<IDept> = [
     {
         title: '部门名称',
@@ -42,19 +44,34 @@ export default function DeptView() {
         dataIndex: 'operation',
         width: '20%',
         key: 'operation',
-        render: (_, record) => (
-        <Space size="middle">
-            <Button type="primary" onClick={() => handleSubCreate(record._id)}>新增</Button>
-            <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
-            <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
-        </Space>
-        ),
+        render: (_, record) => {
+            const canCreate = hasButtonPermission('dept@create');
+            const canEdit = hasButtonPermission('dept@edit');
+            const canDelete = hasButtonPermission('dept@delete');
+            if (!canCreate && !canEdit && !canDelete) {
+                return null;
+            }
+
+            return (
+                <Space size="middle">
+                    <AuthButton code="dept@create">
+                        <Button type="primary" onClick={() => handleSubCreate(record._id)}>新增</Button>
+                    </AuthButton>
+                    <AuthButton code="dept@edit">
+                        <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
+                    </AuthButton>
+                    <AuthButton code="dept@delete">
+                        <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
+                    </AuthButton>
+                </Space>
+            );
+        },
     },
     ];
     
     const [data, setData] = useState<IDept[]>([]);
     const [loading, setLoading] = useState(false);
-    const deptRef = useState<{
+    const deptRef = useRef<{
         openModal: (type: string, data?: IDept | {parentId?: string}) => void 
     }>(null);
     const [form] = Form.useForm();
@@ -72,7 +89,7 @@ export default function DeptView() {
         form.resetFields();
         getDeptList();
     }
-    const handleCreate  = (id:string) => {
+    const handleCreate  = (id = '') => {
         console.log('Create Department');
         deptRef.current?.openModal('create', {parentId:id});
     }
@@ -116,7 +133,9 @@ export default function DeptView() {
                 <div className='header'>
                     <div className='title'>Department List</div>
                     <div className='actions'>
-                        <Button className='btn btn-primary' onClick={handleCreate}>Add Department</Button>
+                        <AuthButton code="dept@create">
+                            <Button className='btn btn-primary' onClick={() => handleCreate()}>Add Department</Button>
+                        </AuthButton>
                     </div>
                 </div>
                 <div className='content'>

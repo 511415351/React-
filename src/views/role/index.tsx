@@ -4,12 +4,14 @@ import { Form, Input,Space,Button ,Table, Modal, message} from 'antd';
 import type { TableColumnsType } from 'antd';
 import api from '../../api/roleApi';
 import type { IMenu, IRole, IRoleSearchParams } from '../../types/api';
-import styles from './index.module.less';
 import CreateRole from './CreateRole';
 import SetPermission from './SetPermission';
+import AuthButton from '../../components/AuthButton';
+import usePermission from '../../hooks/usePermission';
 
 export default function RoleView() {
     const [form] = Form.useForm();
+    const { hasButtonPermission } = usePermission();
     const roleRef = useRef<{
         openModal:(type: string, data?:IRole| {parnetId:string}) => void
     }>(null);
@@ -43,13 +45,28 @@ export default function RoleView() {
             dataIndex: 'operation',
             width: '20%',
             key: 'operation',
-            render: (_, record) => (
-            <Space size="middle">
-                <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
-                <Button type="primary" onClick={() => handlePermission(record)}>权限设置</Button>
-                <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
-            </Space>
-            ),
+            render: (_, record) => {
+                const canEdit = hasButtonPermission('role@edit');
+                const canSetting = hasButtonPermission('role@setting');
+                const canDelete = hasButtonPermission('role@delete');
+                if (!canEdit && !canSetting && !canDelete) {
+                    return null;
+                }
+
+                return (
+                    <Space size="middle">
+                        <AuthButton code="role@edit">
+                            <Button type="primary" onClick={() => handleEdit(record)}>编辑</Button>
+                        </AuthButton>
+                        <AuthButton code="role@setting">
+                            <Button type="primary" onClick={() => handlePermission(record)}>权限设置</Button>
+                        </AuthButton>
+                        <AuthButton code="role@delete">
+                            <Button danger onClick={() => handleDelete(record._id)}>删除</Button>
+                        </AuthButton>
+                    </Space>
+                );
+            },
         },    
     ];
     const getRoleData = async ({current, pageSize}: {current:number; pageSize:number},formData: IRoleSearchParams) => {
@@ -114,7 +131,9 @@ export default function RoleView() {
                 <div className='header'>
                     <div className='title'>Role List</div>
                     <div className='actions'>
-                        <Button className='btn btn-primary' onClick={handleCreate}>Add Role</Button>
+                        <AuthButton code="role@create">
+                            <Button className='btn btn-primary' onClick={handleCreate}>Add Role</Button>
+                        </AuthButton>
                     </div>
                 </div>
                 <div className='content'>
