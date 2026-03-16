@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import Inspect from 'vite-plugin-inspect';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 
 // const viteMckServer = () : Plugin => {
@@ -32,7 +33,8 @@ import Inspect from 'vite-plugin-inspect';
 // }
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+    return {
     server: {
         proxy: {
             '/api': {
@@ -42,8 +44,12 @@ export default defineConfig({
             },
         },
     },
-  plugins: [
-    Inspect(),
-    react(),
-],
+    plugins: [
+        Inspect(),
+        react(),
+        visualizer({
+            open: true,
+        }),
+    ],
+};
 })
