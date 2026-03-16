@@ -5,7 +5,7 @@ import type{ IDept, IUser, IMenu } from '../../types/api';
 import api from '../../api';
 
 interface IProps {
-    mref: RefObject<{ openModal: (type: string, data?: IMenu | {parentId?: string}) => void }>;
+    mref: RefObject<{ openModal: (type: string, data?: IMenu | {parentId?: string}) => void } | null>;
     updateMenuList?: () => void;
 }
 export default function CreateMenu(props: IProps) {
@@ -45,7 +45,7 @@ export default function CreateMenu(props: IProps) {
         setIsModalOpen(false);
         form.resetFields();
     };
-    const openModal = (type: string, data?: IDept | {parentId?: string}) => {
+    const openModal = (type: string, data?: IMenu | {parentId?: string}) => {
         setIsModalOpen(true);
         setActions(type);
         getMenuList();

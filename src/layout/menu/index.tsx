@@ -1,4 +1,5 @@
 import styles from './index.module.less';
+import { createElement } from 'react';
 import { Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import * as Icons from '@ant-design/icons';
@@ -14,8 +15,9 @@ function renderIcon(iconName?: string) {
         return undefined;
     }
 
-    const IconComponent = Icons[iconName as keyof typeof Icons];
-    return typeof IconComponent === 'function' ? <IconComponent /> : undefined;
+    const iconMap = Icons as unknown as Record<string, (props: object) => ReturnType<typeof createElement>>;
+    const IconComponent = iconMap[iconName];
+    return IconComponent ? createElement(IconComponent, {}) : undefined;
 }
 
 function buildMenuItems(menuList: IMenu[]): MenuItem[] {
@@ -33,21 +35,17 @@ function buildMenuItems(menuList: IMenu[]): MenuItem[] {
         });
 }
 
-function findOpenKeys(menuItems: MenuItem[], targetPath: string, parentKeys: string[] = []): string[] {
-    for (const item of menuItems) {
-        if (!item || typeof item !== 'object') {
-            continue;
-        }
-
-        const currentKey = String(item.key);
-        if (currentKey === targetPath) {
+function findOpenKeysByPath(list: IMenu[], targetPath: string, parentKeys: string[] = []): string[] {
+    for (const item of list) {
+        if (item.path === targetPath) {
             return parentKeys;
         }
 
         if (Array.isArray(item.children) && item.children.length > 0) {
-            const childKeys = findOpenKeys(item.children, targetPath, currentKey.startsWith('/') ? parentKeys : [...parentKeys, currentKey]);
-            if (childKeys.length || item.children.some((child) => child && typeof child === 'object' && String(child.key) === targetPath)) {
-                return currentKey.startsWith('/') ? childKeys : [...parentKeys, currentKey];
+            const nextParents = item.path ? parentKeys : [...parentKeys, item._id];
+            const childResult = findOpenKeysByPath(item.children, targetPath, nextParents);
+            if (childResult.length > 0 || item.children.some((child) => child.path === targetPath)) {
+                return childResult;
             }
         }
     }
@@ -78,7 +76,7 @@ const SiberMenu = () => {
             </div>
             <Menu
                 selectedKeys={[location.pathname || currentMenu]}
-                defaultOpenKeys={findOpenKeys(items, location.pathname || currentMenu)}
+                defaultOpenKeys={findOpenKeysByPath(menuList, location.pathname || currentMenu)}
                 onClick={ menuClick}
                 mode="inline"
                 theme="dark"

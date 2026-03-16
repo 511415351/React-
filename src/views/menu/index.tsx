@@ -101,7 +101,7 @@ export default function MenuView() {
     const [loading, setLoading] = useState(false);
     const menuRef = useRef<{
         openModal: (type: string, data?: IMenu | {parentId?: string}) => void 
-    }>(null);
+    } | null>(null);
     const [form] = Form.useForm();
     useEffect(() => {
         getMenuList();
@@ -142,7 +142,7 @@ export default function MenuView() {
         });
     }
     const handledDelOK = async (id: string) => {
-        await api.deleteMenu({ _id: id });
+        await api.deleteMenu(id);
         message.success('Menu deleted successfully');
         getMenuList();
     }

@@ -1,5 +1,6 @@
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import Inspect from 'vite-plugin-inspect';
 
 
 // const viteMckServer = () : Plugin => {
@@ -41,5 +42,8 @@ export default defineConfig({
             },
         },
     },
-  plugins: [react()],
+  plugins: [
+    Inspect(),
+    react(),
+],
 })

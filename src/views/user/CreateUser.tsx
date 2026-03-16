@@ -8,7 +8,7 @@ import api from '../../api';
 import roleApi from '../../api/roleApi';
 import type { IDept, IRole, IUser } from '../../types/api';
 interface IProps {
-    mref: RefObject<{ openModal: (type: string, data?: IUser) => void }>;
+    mref: RefObject<{ openModal: (type: string, data?: IUser) => void } | null>;
     update: () => void;
 }
 const CreateUser = (props: IProps) => {

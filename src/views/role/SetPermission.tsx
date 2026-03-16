@@ -8,8 +8,9 @@ import apiMenu from '../../api';
 
 
 interface IProps {
-    mref: RefObject<{ openModal: (type: string, data?: IRole ) => void }>;
+    mref: RefObject<{ openModal: (type: string, data?: IRole ) => void } | null>;
     updateMenuList?: () => void;
+    update?: () => void;
 }
 export default function SetPermission(props: IProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,10 +23,6 @@ export default function SetPermission(props: IProps) {
         const data = await apiMenu.getMenuList();
         setMenuList(data);
     }
-    const getRoleList = async () => {
-            const data = await api.getRoleList();
-                setIRoleList(data);
-        }
     useEffect(() => {
         getMenuList();
     }, []);
@@ -45,7 +42,6 @@ export default function SetPermission(props: IProps) {
     const openModal = (type: string, data?: IRole) => {
         setIsModalOpen(true);
         setRoleInfo(data);
-        getRoleList();
         getMenuList();
         setCheckKeys(data?.permissionList.checkedKeys||[]);
         if (data) {
@@ -53,22 +49,15 @@ export default function SetPermission(props: IProps) {
         }
     }
     const onCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
-        console.log('onCheck', checkedKeys, info);
-        setCheckKeys(checkedKeys);
-        const checkedKeysTemp: string[]=[];
-        const halfCheckedKeysTemp:string[]=[];
-        info.checkedNodes.map((node:IMenu)=>{
-            if(node.menuType===2){
-                checkedKeysTemp.push(node._id);
-            } else{
-                halfCheckedKeysTemp.push(node._id);
-            }
-        });
+        const nextCheckedKeys = Array.isArray(checkedKeys) ? checkedKeys : checkedKeys.checked;
+        const nextHalfCheckedKeys = (info as { halfCheckedKeys?: React.Key[] }).halfCheckedKeys ?? [];
+
+        setCheckKeys(nextCheckedKeys.map((key) => String(key)));
         setPermission({
             _id:roleInfo?._id || '',
             permissionList:{
-                checkedKeys:checkedKeysTemp,
-                halfCheckedKeys:halfCheckedKeysTemp.concat(info.halfCheckedKeys),
+                checkedKeys: nextCheckedKeys.map((key) => String(key)),
+                halfCheckedKeys: nextHalfCheckedKeys.map((key) => String(key)),
             }
         })
     };

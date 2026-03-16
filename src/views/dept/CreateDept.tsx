@@ -4,7 +4,7 @@ import { IDept, IUser } from '../../types/api';
 import api from '../../api';
 
 interface IProps {
-    mref: RefObject<{ openModal: (type: string, data?: IDept | {parentId?: string}) => void }>;
+    mref: RefObject<{ openModal: (type: string, data?: IDept | {parentId?: string}) => void } | null>;
     updateDeptList?: () => void;
 }
 export default function CreateDept(props: IProps) {
@@ -16,7 +16,7 @@ export default function CreateDept(props: IProps) {
             const data = await api.getDepList();
                 setIDept(data);
         }
-    const [IUserList, setIUserList] = useState([]);
+    const [IUserList, setIUserList] = useState<IUser[]>([]);
     useEffect(() => {
         getUserList();
     }, []);
@@ -42,7 +42,7 @@ export default function CreateDept(props: IProps) {
         }
         setIsModalOpen(false);              
         handleCancel();
-        props.updateDeptList();
+        props.updateDeptList?.();
     };
 
     const handleCancel = () => {

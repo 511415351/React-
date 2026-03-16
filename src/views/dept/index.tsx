@@ -73,7 +73,7 @@ export default function DeptView() {
     const [loading, setLoading] = useState(false);
     const deptRef = useRef<{
         openModal: (type: string, data?: IDept | {parentId?: string}) => void 
-    }>(null);
+    } | null>(null);
     const [form] = Form.useForm();
     useEffect(() => {
         getDeptList();
@@ -114,7 +114,7 @@ export default function DeptView() {
         });
     }
     const handledDelOK = async (id: string) => {
-        await api.deleteDept({ _id: id });
+        await api.deleteDept(id);
         message.success('Department deleted successfully');
         getDeptList();
     }

@@ -11,12 +11,12 @@ import type {
     IUpdateUserParams,
     ICreateUserParams,
     IUserSearchParams,
+    ResultData,
     IReportData,
     ILineData,
     IRadarData,
     IPieData,
 } from "../types/api";
-import create from "@ant-design/icons/lib/components/IconFont";
 export default {
     login(params: ILoginParams){
         return request.post('/users/login', params);
@@ -41,7 +41,7 @@ export default {
     //用户模块
     //获取用户信息
     getUserList(params?: IUserSearchParams){
-        return request.get('/users/list', { params });
+        return request.get<ResultData<IUser>>('/users/list', { params });
     },
     getAllUser(params?: IUser){
         return request.get<IUser[]>('/users/all/list', { params });
@@ -52,7 +52,7 @@ export default {
     editUser(params:IUpdateUserParams){
         return request.post<IUpdateUserParams>('/users/edit',{params});
     },
-    delUser(params:any){
+    delUser(params:unknown){
         return request.post('/users/delete',{params});
     },
     getUserInfo() {

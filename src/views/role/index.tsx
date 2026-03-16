@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useAntdTable } from 'ahooks';
 import { Form, Input,Space,Button ,Table, Modal, message} from 'antd';
 import type { TableColumnsType } from 'antd';
 import api from '../../api/roleApi';
-import type { IMenu, IRole, IRoleSearchParams } from '../../types/api';
+import type { IRole, IRoleSearchParams } from '../../types/api';
 import CreateRole from './CreateRole';
 import SetPermission from './SetPermission';
 import AuthButton from '../../components/AuthButton';
@@ -13,11 +13,11 @@ export default function RoleView() {
     const [form] = Form.useForm();
     const { hasButtonPermission } = usePermission();
     const roleRef = useRef<{
-        openModal:(type: string, data?:IRole| {parnetId:string}) => void
-    }>(null);
+        openModal:(type: string, data?:IRole| {parentId?:string}) => void
+    } | null>(null);
     const PermissionRef = useRef<{
-        openModal:(type: string, data?:IMenu) => void
-    }>(null);
+        openModal:(type: string, data?:IRole) => void
+    } | null>(null);
     const columns: TableColumnsType<IRole> = [
         {
             title: 'Role Name',
@@ -84,10 +84,6 @@ export default function RoleView() {
     const handleCreate = () => {
         // 打开创建角色的模态框
         roleRef.current?.openModal('create');
-    };
-    const handleSubCreate = (parentId: string) => {
-        // 打开创建子角色的模态框，并传递 parentId
-        PermissionRef.current?.openModal(parentId);
     };
     const handleEdit = (record: IRole) => {
         // 打开编辑角色的模态框，并传递 record 数据

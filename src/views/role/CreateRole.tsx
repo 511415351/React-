@@ -5,21 +5,14 @@ import type{   IRole } from '../../types/api';
 import api from '../../api/roleApi';
 
 interface IProps {
-    mref: RefObject<{ openModal: (type: string, data?: IRole | {parentId?: string}) => void }>;
+    mref: RefObject<{ openModal: (type: string, data?: IRole | {parentId?: string}) => void } | null>;
     updateMenuList?: () => void;
+    update?: () => void;
 }
 export default function CreateRole(props: IProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
-    const [roledata,setIRoleList]=useState()
     const [actions, setActions] = useState<string>('create');
-    const getRoleList = async () => {
-            const data = await api.getRoleList();
-                setIRoleList(data);
-        }
-    useEffect(() => {
-        getRoleList();
-    }, []);
     const handleOk = async () => {
         const valid = await form.validateFields();
         if (!valid) return;
@@ -43,7 +36,6 @@ export default function CreateRole(props: IProps) {
     const openModal = (type: string, data?: IRole| {parentId?: string}) => {
         setIsModalOpen(true);
         setActions(type);
-        getRoleList();
         if (data) {
             form.setFieldsValue(data);
         }

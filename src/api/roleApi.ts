@@ -1,7 +1,7 @@
 import request from "../utils/reuquest";
 import type { IRole,ICreateRoleParams,IPermission,IEditRoleParams,IRoleSearchParams,ResultData } from "../types/api";
 export default {
-    getRoleList(params:IRoleSearchParams){
+    getRoleList(params?:IRoleSearchParams){
         return request.get<ResultData<IRole>>('/roles/list',params)
     },
     deleteRole(params:{_id:string}){
@@ -17,6 +17,6 @@ export default {
         return request.post('/roles/edit',params)
     },
     getAllRoleList(){
-        return request.get<ResultData<IRole>>('/roles/allList')
+        return request.get<IRole[]>('/roles/allList')
     },
 }

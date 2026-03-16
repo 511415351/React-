@@ -6,6 +6,7 @@ import { formatDate as formatDateToChinese } from '../../utils/index';
 import CreateUser from './CreateUser';
 import { useAntdTable } from 'ahooks';
 import type{ IUser, IUserSearchParams } from '../../types/api';
+import type { ResultData } from '../../types/api';
 import AuthButton from '../../components/AuthButton';
 import usePermission from '../../hooks/usePermission';
 
@@ -15,7 +16,7 @@ export default function UserList() {
     const { hasButtonPermission } = usePermission();
     const userRef = useRef<{
         openModal: (type: string, data?: IUser) => void;
-    }>();
+    } | null>(null);
 
     const getTableData = (
         { current, pageSize }: { current: number; pageSize: number },
@@ -27,7 +28,7 @@ export default function UserList() {
                 pageNum: current,
                 pageSize: pageSize,
             })
-            .then((data) => {
+            .then((data: ResultData<IUser>) => {
                 return {
                     total: data.page.total,
                     list: data.list,
