@@ -1,15 +1,10 @@
 import {  createBrowserRouter ,Navigate} from "react-router-dom";
-
+import { lazy } from 'react';
+import {lazyLoad} from "./LazyLoad"
 import NotFound from "../views/NotFound";
 import Forbidden from "../views/Forbidden";
 import Login from "../views/login";
-import Welcome from "../views/welcome";
 import Layout from "../layout";
-import DashboardView from "../views/dashboard";
-import DeptView from "../views/dept";
-import UserView from "../views/user";
-import RoleView from "../views/role";
-import MenuView from "../views/menu";
 import AuthLoader from "./AuthLoader";
 
 
@@ -32,19 +27,19 @@ const router = createBrowserRouter([
         element: <Layout />, 
         loader: AuthLoader,
         children: [
-            {path: "/welcome" ,element: <Welcome />},
-            {path: "/dashboard" ,element: <DashboardView />},
-            {path: "/deptList" ,element: <DeptView />},
-            {path: "/userList" ,element: <UserView />},
-            {path: "/roleList" ,element: <RoleView />},
-            {path: "/menuList" ,element: <MenuView />},
+            {path: "/welcome" ,element: lazyLoad(lazy(() => import('../views/welcome')))},
+            {path: "/dashboard" ,element: lazyLoad(lazy(() => import('../views/dashboard')))},
+            {path: "/deptList" ,element: lazyLoad(lazy(() => import('../views/dept')))},
+            {path: "/userList" ,element: lazyLoad(lazy(() => import('../views/user')))},
+            {path: "/roleList" ,element: lazyLoad(lazy(() => import('../views/role')))},
+            {path: "/menuList" ,element: lazyLoad(lazy(() => import('../views/menu')))},
         ] 
     },
     { path: "/", element: <Navigate to="/welcome" /> },
     { path: "/vite", element: <div>Vite Demo</div> },
     { path: "/login", element: <Login />, action: loginAction },
     { path: "/403", element: <Forbidden /> },
-    {path : "/welcome", element: <Welcome />},
+    {path : "/welcome", element: lazyLoad(lazy(() => import('../views/welcome')))},
         
     { path: "*", element: <NotFound /> },
 ]);
